@@ -2,6 +2,7 @@ package hello.scheduledevelop.schedule.controller;
 
 import hello.scheduledevelop.schedule.dto.CreateScheduleRequest;
 import hello.scheduledevelop.schedule.dto.CreateScheduleResponse;
+import hello.scheduledevelop.schedule.dto.SearchScheduleResponse;
 import hello.scheduledevelop.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,5 +27,10 @@ public class ScheduleController {
             @RequestBody CreateScheduleRequest request
             ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(scheduleService.createSchedule(memberId, request));
+    }
+
+    @GetMapping("/api/members/{memberId}/schedules/{scheduleId}")
+    public ResponseEntity<SearchScheduleResponse> getScheduleById(@PathVariable Long scheduleId) {
+        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findScheduleById(scheduleId));
     }
 }
