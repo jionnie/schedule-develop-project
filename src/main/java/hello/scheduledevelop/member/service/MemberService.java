@@ -6,6 +6,7 @@ import hello.scheduledevelop.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
@@ -27,10 +28,11 @@ public class MemberService {
      * @return 회원 생성 응답 DTO
      */
     @Transactional
-    public CreateMemberResponse signup(CreateMemberRequest request) {
+    public CreateMemberResponse signup(@RequestHeader CreateMemberRequest request) {
         Member member = new Member(
                 request.getName(),
-                request.getEmail()
+                request.getEmail(),
+                request.getPassword()
         );
 
         memberRepository.save(member);
