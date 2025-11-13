@@ -3,8 +3,7 @@ package hello.scheduledevelop.member.service;
 import hello.scheduledevelop.member.dto.*;
 import hello.scheduledevelop.member.entity.Member;
 import hello.scheduledevelop.member.repository.MemberRepository;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,15 +15,10 @@ import java.util.List;
  * @author jiwon jung
  */
 @Service
-@Slf4j
+@RequiredArgsConstructor
 public class MemberService {
 
-    private MemberRepository memberRepository;
-
-    @Autowired
-    public MemberService(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
-    }
+    private final MemberRepository memberRepository;
 
     /**
      * 새로운 회원을 생성한다.
@@ -79,7 +73,7 @@ public class MemberService {
      */
     @Transactional(readOnly = true)
     public SearchMemberResponse findMemberByName(SearchMemberRequest request) {
-        log.info("name: " + request.getName());
+
         Member member = memberRepository.findByName(request.getName()).orElseThrow(
                 () -> new IllegalStateException("존재하지 않는 유저입니다.")
         );
@@ -144,11 +138,27 @@ public class MemberService {
      *
      * @param memberId 유저 id
      */
+    @Transactional
     public void deleteMember(Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new IllegalStateException("존재하지 않는 유저입니다.")
         );
 
         memberRepository.delete(member);
+    }
+
+    /**
+     * 사용자를 DTO가 아닌 Member 자체로 얻어온다.
+     *
+     * @param memberId 유저 id
+     * @return Member 객체
+     */
+    @Transactional
+    public Member getMember(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new IllegalStateException("존재하지 않는 유저입니다.")
+        );
+
+        return member;
     }
 }

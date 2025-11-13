@@ -1,5 +1,6 @@
 package hello.scheduledevelop.member.entity;
 
+import hello.scheduledevelop.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
