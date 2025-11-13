@@ -143,7 +143,6 @@ public class MemberService {
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new IllegalStateException("존재하지 않는 유저입니다.")
         );
-
         memberRepository.delete(member);
     }
 

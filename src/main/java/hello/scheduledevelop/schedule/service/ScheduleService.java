@@ -133,4 +133,14 @@ public class ScheduleService {
                 schedule.getModifiedAt()
         );
     }
+
+    /**
+     * 일정을 삭제한다.
+     *
+     * @param scheduleId 일정 id
+     */
+    @Transactional
+    public void deleteSchedule(Long scheduleId) {
+        scheduleRepository.deleteById(scheduleId);
+    }
 }
