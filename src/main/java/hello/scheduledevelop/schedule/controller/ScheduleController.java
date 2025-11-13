@@ -1,13 +1,13 @@
 package hello.scheduledevelop.schedule.controller;
 
-import hello.scheduledevelop.schedule.dto.CreateScheduleRequest;
-import hello.scheduledevelop.schedule.dto.CreateScheduleResponse;
-import hello.scheduledevelop.schedule.dto.SearchScheduleResponse;
+import hello.scheduledevelop.schedule.dto.*;
 import hello.scheduledevelop.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 일정 정보를 CRUD 하는 REST API 엔드포인트를 제공하는 컨트롤러
@@ -32,5 +32,17 @@ public class ScheduleController {
     @GetMapping("/api/members/{memberId}/schedules/{scheduleId}")
     public ResponseEntity<SearchScheduleResponse> getScheduleById(@PathVariable Long scheduleId) {
         return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findScheduleById(scheduleId));
+    }
+
+    @GetMapping("/api/members/{memberId}/schedules")
+    public ResponseEntity<List<SearchScheduleResponse>> getSchedules(@PathVariable Long memberId) {
+        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findSchedules(memberId));
+    }
+
+    @PatchMapping("/api/members/{memberId}/schedules/{scheduleId}")
+    public ResponseEntity<UpdateScheduleResponse> updateSchedule(
+            @PathVariable Long scheduleId,
+            @RequestBody UpdateScheduleRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(scheduleService.updateSchedule(scheduleId, request));
     }
 }

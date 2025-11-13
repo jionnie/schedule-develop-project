@@ -47,4 +47,11 @@ public class Schedule extends BaseEntity {
         this.endDate = endDate;
         this.member = member;
     }
+
+    public void updateSchedule(String title, String content, LocalDate startDate, LocalDate endDate) {
+        this.title = title;
+        this.content = content;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 }
