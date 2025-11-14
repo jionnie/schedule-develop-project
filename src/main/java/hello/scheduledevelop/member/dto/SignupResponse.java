@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  * @author jiwon jung
  */
 @Getter
-public class CreateMemberResponse {
+public class SignupResponse {
 
     private final Long id;
     private final String name;
@@ -18,7 +18,7 @@ public class CreateMemberResponse {
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
 
-    public CreateMemberResponse(Long id, String name, String email, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    public SignupResponse(Long id, String name, String email, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.id = id;
         this.name = name;
         this.email = email;

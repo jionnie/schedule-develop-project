@@ -1,9 +1,11 @@
 package hello.scheduledevelop.member.service;
 
+import hello.scheduledevelop.common.exception.UnauthorizedException;
 import hello.scheduledevelop.member.dto.*;
 import hello.scheduledevelop.member.entity.Member;
 import hello.scheduledevelop.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -28,7 +30,18 @@ public class MemberService {
      * @return 회원 생성 응답 DTO
      */
     @Transactional
-    public CreateMemberResponse signup(@RequestHeader CreateMemberRequest request) {
+    public SignupResponse signup(SignupRequest request) {
+
+        // 이미 가입된 이메일이 있을 시 예외 발생
+        if (memberRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalStateException("이미 가입된 이메일입니다.");
+        }
+
+        // 이미 가입된 이름이 있을 시 예외 발생
+        if (memberRepository.existsByName(request.getName())) {
+            throw new IllegalStateException("이미 가입된 이름입니다");
+        }
+
         Member member = new Member(
                 request.getName(),
                 request.getEmail(),
@@ -37,13 +50,35 @@ public class MemberService {
 
         memberRepository.save(member);
 
-        return new CreateMemberResponse(
+        return new SignupResponse(
                 member.getId(),
                 member.getName(),
                 member.getEmail(),
                 member.getCreatedAt(),
                 member.getModifiedAt()
         );
+    }
+
+    /**
+     * 로그인을 한다.
+     *
+     * @param request 로그인 요청 DTO
+     */
+    @Transactional(readOnly = true)
+    public SessionMember login(LoginRequest request) {
+        // 가입되지 않은 이메일이면 예외 발생
+        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(
+                () -> new IllegalStateException("존재하지 않는 유저입니다.")
+        );
+        
+        if (!request.getPassword().equals(member.getPassword())) {
+            throw new UnauthorizedException("비밀번호가 틀립니다.");
+        }
+
+        return new SessionMember(
+                member.getId(),
+                member.getName(),
+                member.getEmail());
     }
 
     /**
@@ -114,15 +149,20 @@ public class MemberService {
     /**
      * 회원 정보를 수정한다.
      *
-     * @param memberId 회원 id
+     * @param sessionMemberId 세션 멤버 id
      * @param request 회원 수정 요청 DTO
      * @return 회원 수정 응답 DTO
      */
     @Transactional
-    public UpdateMemberResponse updateMember(Long memberId, UpdateMemberRequest request) {
-        Member member = memberRepository.findById(memberId).orElseThrow(
+    public UpdateMemberResponse updateMember(Long sessionMemberId, UpdateMemberRequest request) {
+        Member member = memberRepository.findById(sessionMemberId).orElseThrow(
                 () -> new IllegalStateException("존재하지 않는 유저입니다.")
         );
+
+        // 현재 요청 중인 세션 id와 수정을 요청하는 유저의 id가 다르면 예외 발생
+        if (!sessionMemberId.equals(member.getId())) {
+            throw new IllegalStateException("접근할 수 없습니다.");
+        }
 
         member.updateName(request.getName());
 

@@ -2,13 +2,12 @@ package hello.scheduledevelop.member.controller;
 
 import hello.scheduledevelop.member.dto.*;
 import hello.scheduledevelop.member.service.MemberService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 유저 정보를 CRUD 하는 REST API 엔드포인트를 제공하는 컨트롤러
@@ -17,17 +16,17 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/members")
+@RequestMapping("/api")
 public class MemberController {
 
     private final MemberService memberService;
 
-    @PostMapping
-    public ResponseEntity<CreateMemberResponse> createMember(@Valid @RequestBody CreateMemberRequest request) {
+    @PostMapping("/signup")
+    public ResponseEntity<SignupResponse> createMember(@Valid @RequestBody SignupRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(memberService.signup(request));
     }
 
-    @GetMapping("/{memberId}")
+    @GetMapping("/members/{memberId}")
     public ResponseEntity<SearchMemberResponse> getMemberById(@PathVariable Long memberId) {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.findMemberById(memberId));
     }
@@ -37,21 +36,33 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.findMemberByName(request));
     }
 
-    @GetMapping
-    public ResponseEntity<List<SearchMemberResponse>> getMembers() {
-        return ResponseEntity.status(HttpStatus.OK).body(memberService.findMembers());
-    }
-
-    @PatchMapping("/{memberId}")
+    @PatchMapping("/members")
     public ResponseEntity<UpdateMemberResponse> updateMember(
-            @PathVariable Long memberId,
+            @SessionAttribute(name = "loginMember", required = false) SessionMember sessionMember,
+            HttpSession session,
             @Valid @RequestBody UpdateMemberRequest request) {
-        return ResponseEntity.status(HttpStatus.OK).body(memberService.updateMember(memberId, request));
+
+        SessionMember loggedInMember = (SessionMember) session.getAttribute("loginMember");
+
+        if (loggedInMember == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(memberService.updateMember(sessionMember.getId(), request));
     }
 
-    @DeleteMapping("/{memberId}")
-    public ResponseEntity<Void> deleteMember(@PathVariable Long memberId) {
-        memberService.deleteMember(memberId);
+    @DeleteMapping("/members")
+    public ResponseEntity<Void> deleteMember(
+            @SessionAttribute(name = "loginMember", required = false) SessionMember sessionMember,
+            HttpSession session) {
+
+        SessionMember loggedInMember = (SessionMember) session.getAttribute("loginMember");
+
+        if (loggedInMember == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        memberService.deleteMember(sessionMember.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

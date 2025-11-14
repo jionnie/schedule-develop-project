@@ -9,7 +9,7 @@ import lombok.Getter;
  * @author jiwon jung
  */
 @Getter
-public class CreateMemberRequest {
+public class SignupRequest {
 
     @NotBlank(message = "사용자 이름은 반드시 입력해야 합니다.")
     @Size(min = 2, max = 10, message = "사용자 이름은 2자 이상 10자 이하여야 합니다.")
