@@ -1,6 +1,7 @@
 package hello.scheduledevelop.schedule.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
@@ -21,10 +22,10 @@ public class CreateScheduleRequest {
     @Size(max = 80, message = "일정 내용은 80자를 넘을 수 없습니다.")
     private String content;
 
-    @NotBlank(message = "일정 시작일은 반드시 입력해야 합니다.")
+    @NotNull(message = "일정 시작일은 반드시 입력해야 합니다.")
     private LocalDate startDate;
 
-    @NotBlank(message = "일정 마감일은 반드시 입력해야 합니다.")
+    @NotNull(message = "일정 마감일은 반드시 입력해야 합니다.")
     private LocalDate endDate;
 
 }

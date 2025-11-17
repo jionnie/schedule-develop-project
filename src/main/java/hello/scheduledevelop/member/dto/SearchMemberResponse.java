@@ -1,9 +1,11 @@
 package hello.scheduledevelop.member.dto;
 
+import hello.scheduledevelop.schedule.dto.SearchScheduleResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 유저 조회 응답 DTO

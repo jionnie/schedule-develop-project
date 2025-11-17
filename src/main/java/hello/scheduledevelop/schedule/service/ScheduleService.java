@@ -61,10 +61,15 @@ public class ScheduleService {
      * @return 일정 조회 응답 DTO
      */
     @Transactional(readOnly = true)
-    public SearchScheduleResponse findScheduleById(Long scheduleId) {
+    public SearchScheduleResponse findScheduleById(Long scheduleId, Long memberId) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new IllegalStateException("존재하지 않는 일정입니다.")
         );
+
+        // 현재 요청 중인 세션 id와 수정을 요청하는 유저의 id가 다르면 예외 발생
+        if (!memberId.equals(schedule.getMember().getId())) {
+            throw new IllegalStateException("접근할 수 없습니다.");
+        }
 
         return new SearchScheduleResponse(
                 schedule.getId(),
@@ -88,6 +93,15 @@ public class ScheduleService {
     public List<SearchScheduleResponse> findSchedules(Long memberId) {
         List<Schedule> schedules = scheduleRepository.findByMemberId(memberId);
 
+        if (schedules.isEmpty()) {
+            throw new IllegalStateException("일정이 존재하지 않습니다.");
+        }
+
+        // 현재 요청 중인 세션 id와 수정을 요청하는 유저의 id가 다르면 예외 발생
+        if (!memberId.equals(schedules.get(0).getMember().getId())) {
+            throw new IllegalStateException("접근할 수 없습니다.");
+        }
+
         List<SearchScheduleResponse> dtos = schedules.stream()
                 .map(schedule -> new SearchScheduleResponse(
                         schedule.getId(),
@@ -110,10 +124,15 @@ public class ScheduleService {
      * @return 일정 수정 응답 DTO
      */
     @Transactional
-    public UpdateScheduleResponse updateSchedule(Long scheduleId, UpdateScheduleRequest request) {
+    public UpdateScheduleResponse updateSchedule(Long scheduleId, Long memberId, UpdateScheduleRequest request) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new IllegalStateException("존재하지 않는 일정입니다.")
         );
+
+        // 현재 요청 중인 세션 id와 수정을 요청하는 유저의 id가 다르면 예외 발생
+        if (!memberId.equals(schedule.getMember().getId())) {
+            throw new IllegalStateException("접근할 수 없습니다.");
+        }
 
         schedule.updateSchedule(
                 request.getTitle(),
@@ -140,7 +159,16 @@ public class ScheduleService {
      * @param scheduleId 일정 id
      */
     @Transactional
-    public void deleteSchedule(Long scheduleId) {
+    public void deleteSchedule(Long scheduleId, Long memberId) {
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
+                () -> new IllegalStateException("존재하지 않는 일정입니다.")
+        );
+
+        // 현재 요청 중인 세션 id와 수정을 요청하는 유저의 id가 다르면 예외 발생
+        if (!memberId.equals(schedule.getMember().getId())) {
+            throw new IllegalStateException("접근할 수 없습니다.");
+        }
+
         scheduleRepository.deleteById(scheduleId);
     }
 }

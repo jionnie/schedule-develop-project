@@ -3,9 +3,13 @@ package hello.scheduledevelop.member.service;
 import hello.scheduledevelop.member.dto.*;
 import hello.scheduledevelop.member.entity.Member;
 import hello.scheduledevelop.member.repository.MemberRepository;
+import hello.scheduledevelop.schedule.dto.SearchScheduleResponse;
+import hello.scheduledevelop.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * 유저에 대한 핵심 비즈니스 로직을 담당하는 MemberService
