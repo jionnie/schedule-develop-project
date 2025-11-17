@@ -2,6 +2,8 @@ package hello.scheduledevelop.member.controller;
 
 import hello.scheduledevelop.member.dto.LoginRequest;
 import hello.scheduledevelop.member.dto.SessionMember;
+import hello.scheduledevelop.member.dto.SignupRequest;
+import hello.scheduledevelop.member.dto.SignupResponse;
 import hello.scheduledevelop.member.service.AuthService;
 import hello.scheduledevelop.member.service.MemberService;
 import jakarta.servlet.http.HttpSession;
@@ -22,6 +24,12 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final MemberService memberService;
+
+    @PostMapping("/signup")
+    public ResponseEntity<SignupResponse> createMember(@Valid @RequestBody SignupRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(memberService.signup(request));
+    }
 
     @PostMapping("/login")
     public ResponseEntity<LoginRequest> login(@Valid @RequestBody LoginRequest request, HttpSession session) {

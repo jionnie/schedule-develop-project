@@ -18,28 +18,23 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/members")
 public class MemberController {
 
     private final MemberService memberService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<SignupResponse> createMember(@Valid @RequestBody SignupRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(memberService.signup(request));
-    }
-
-    @GetMapping("/members/{memberId}")
+    @GetMapping("/{memberId}")
     public ResponseEntity<SearchMemberResponse> getMemberById(@PathVariable Long memberId) {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.findMemberById(memberId));
     }
 
-    @GetMapping("/members")
+    @GetMapping
     public ResponseEntity<SearchMemberResponse> getMemberByName(@Valid @ModelAttribute SearchMemberRequest request) {
 
         return ResponseEntity.status(HttpStatus.OK).body(memberService.findMemberByName(request));
     }
 
-    @PatchMapping("/members")
+    @PatchMapping
     public ResponseEntity<UpdateMemberResponse> updateMember(
             HttpSession session,
             @SessionAttribute(name = "loginMember", required = false) SessionMember sessionMember,
@@ -53,7 +48,7 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.updateMember(sessionMember.getId(), request));
     }
 
-    @DeleteMapping("/members")
+    @DeleteMapping
     public ResponseEntity<Void> deleteMember(
             HttpSession session,
             @SessionAttribute(name = "loginMember", required = false) SessionMember sessionMember) {
