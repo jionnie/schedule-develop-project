@@ -1,14 +1,11 @@
 package hello.scheduledevelop.member.service;
 
-import hello.scheduledevelop.common.exception.UnauthorizedException;
 import hello.scheduledevelop.member.dto.*;
 import hello.scheduledevelop.member.entity.Member;
 import hello.scheduledevelop.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
@@ -60,28 +57,6 @@ public class MemberService {
     }
 
     /**
-     * 로그인을 한다.
-     *
-     * @param request 로그인 요청 DTO
-     */
-    @Transactional(readOnly = true)
-    public SessionMember login(LoginRequest request) {
-        // 가입되지 않은 이메일이면 예외 발생
-        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(
-                () -> new IllegalStateException("존재하지 않는 유저입니다.")
-        );
-        
-        if (!request.getPassword().equals(member.getPassword())) {
-            throw new UnauthorizedException("비밀번호가 틀립니다.");
-        }
-
-        return new SessionMember(
-                member.getId(),
-                member.getName(),
-                member.getEmail());
-    }
-
-    /**
      * id로 회원을 조회한다.
      *
      * @param memberId 회원 id
@@ -110,7 +85,6 @@ public class MemberService {
      */
     @Transactional(readOnly = true)
     public SearchMemberResponse findMemberByName(SearchMemberRequest request) {
-
         Member member = memberRepository.findByName(request.getName()).orElseThrow(
                 () -> new IllegalStateException("존재하지 않는 유저입니다.")
         );
@@ -124,43 +98,43 @@ public class MemberService {
         );
     }
 
-    /**
-     * 전체 사용자를 조회한다.
-     * 
-     * @return 회원 조회 응답 DTO 리스트
-     */
-    @Transactional(readOnly = true)
-    public List<SearchMemberResponse> findMembers() {
-        List<Member> members = memberRepository.findAll();
-
-        List<SearchMemberResponse> dtos = members.stream()
-                .map(member -> new SearchMemberResponse(
-                        member.getId(),
-                        member.getName(),
-                        member.getEmail(),
-                        member.getCreatedAt(),
-                        member.getModifiedAt()
-                ))
-                .toList();
-
-        return dtos;
-    }
+//    /**
+//     * 전체 사용자를 조회한다.
+//     *
+//     * @return 회원 조회 응답 DTO 리스트
+//     */
+//    @Transactional(readOnly = true)
+//    public List<SearchMemberResponse> findMembers() {
+//        List<Member> members = memberRepository.findAll();
+//
+//        List<SearchMemberResponse> dtos = members.stream()
+//                .map(member -> new SearchMemberResponse(
+//                        member.getId(),
+//                        member.getName(),
+//                        member.getEmail(),
+//                        member.getCreatedAt(),
+//                        member.getModifiedAt()
+//                ))
+//                .toList();
+//
+//        return dtos;
+//    }
 
     /**
      * 회원 정보를 수정한다.
      *
-     * @param sessionMemberId 세션 멤버 id
+     * @param memberId 세션 멤버 id
      * @param request 회원 수정 요청 DTO
      * @return 회원 수정 응답 DTO
      */
     @Transactional
-    public UpdateMemberResponse updateMember(Long sessionMemberId, UpdateMemberRequest request) {
-        Member member = memberRepository.findById(sessionMemberId).orElseThrow(
+    public UpdateMemberResponse updateMember(Long memberId, UpdateMemberRequest request) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new IllegalStateException("존재하지 않는 유저입니다.")
         );
 
         // 현재 요청 중인 세션 id와 수정을 요청하는 유저의 id가 다르면 예외 발생
-        if (!sessionMemberId.equals(member.getId())) {
+        if (!memberId.equals(member.getId())) {
             throw new IllegalStateException("접근할 수 없습니다.");
         }
 
@@ -185,6 +159,12 @@ public class MemberService {
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new IllegalStateException("존재하지 않는 유저입니다.")
         );
+
+        // 현재 요청 중인 세션 id와 수정을 요청하는 유저의 id가 다르면 예외 발생
+        if (!memberId.equals(member.getId())) {
+            throw new IllegalStateException("접근할 수 없습니다.");
+        }
+
         memberRepository.delete(member);
     }
 

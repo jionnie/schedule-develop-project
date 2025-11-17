@@ -5,6 +5,7 @@ import hello.scheduledevelop.member.service.MemberService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
  *
  * @author jiwon jung
  */
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -31,20 +33,20 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.findMemberById(memberId));
     }
 
-    @GetMapping(params = "name")
+    @GetMapping("/members")
     public ResponseEntity<SearchMemberResponse> getMemberByName(@Valid @ModelAttribute SearchMemberRequest request) {
+
         return ResponseEntity.status(HttpStatus.OK).body(memberService.findMemberByName(request));
     }
 
     @PatchMapping("/members")
     public ResponseEntity<UpdateMemberResponse> updateMember(
-            @SessionAttribute(name = "loginMember", required = false) SessionMember sessionMember,
             HttpSession session,
+            @SessionAttribute(name = "loginMember", required = false) SessionMember sessionMember,
             @Valid @RequestBody UpdateMemberRequest request) {
 
-        SessionMember loggedInMember = (SessionMember) session.getAttribute("loginMember");
-
-        if (loggedInMember == null) {
+        // 세션에 loginMember로 찾은 SessionMember가 없으면 로그인된 사용자 X
+        if (sessionMember == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
@@ -53,16 +55,16 @@ public class MemberController {
 
     @DeleteMapping("/members")
     public ResponseEntity<Void> deleteMember(
-            @SessionAttribute(name = "loginMember", required = false) SessionMember sessionMember,
-            HttpSession session) {
+            HttpSession session,
+            @SessionAttribute(name = "loginMember", required = false) SessionMember sessionMember) {
 
-        SessionMember loggedInMember = (SessionMember) session.getAttribute("loginMember");
-
-        if (loggedInMember == null) {
+        // 세션에 loginMember로 찾은 SessionMember가 없으면 로그인된 사용자 X
+        if (sessionMember == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         memberService.deleteMember(sessionMember.getId());
+
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

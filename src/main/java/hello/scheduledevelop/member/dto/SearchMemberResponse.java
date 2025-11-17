@@ -1,6 +1,7 @@
 package hello.scheduledevelop.member.dto;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
  * @author jiwon jung
  */
 @Getter
+@RequiredArgsConstructor
 public class SearchMemberResponse {
 
     private final Long id;
@@ -17,12 +19,4 @@ public class SearchMemberResponse {
     private final String email;
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
-
-    public SearchMemberResponse(Long id, String name, String email, LocalDateTime createdAt, LocalDateTime modifiedAt) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
-    }
 }
