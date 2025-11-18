@@ -1,5 +1,7 @@
 package hello.scheduledevelop.member.controller;
 
+import hello.scheduledevelop.common.exception.ErrorCode;
+import hello.scheduledevelop.common.exception.UnauthorizedException;
 import hello.scheduledevelop.member.dto.*;
 import hello.scheduledevelop.member.service.MemberService;
 import jakarta.servlet.http.HttpSession;
@@ -42,7 +44,7 @@ public class MemberController {
 
         // 세션에 loginMember로 찾은 SessionMember가 없으면 로그인된 사용자 X
         if (sessionMember == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UnauthorizedException(ErrorCode.UNAUTHENTICATE_MEMBER);
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(memberService.updateMember(sessionMember.getId(), request));
@@ -55,7 +57,7 @@ public class MemberController {
 
         // 세션에 loginMember로 찾은 SessionMember가 없으면 로그인된 사용자 X
         if (sessionMember == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UnauthorizedException(ErrorCode.UNAUTHENTICATE_MEMBER);
         }
 
         memberService.deleteMember(sessionMember.getId());

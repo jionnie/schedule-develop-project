@@ -1,10 +1,11 @@
 package hello.scheduledevelop.member.service;
 
+import hello.scheduledevelop.common.exception.DataNotFoundException;
+import hello.scheduledevelop.common.exception.ErrorCode;
+import hello.scheduledevelop.common.exception.UnauthorizedException;
 import hello.scheduledevelop.member.dto.*;
 import hello.scheduledevelop.member.entity.Member;
 import hello.scheduledevelop.member.repository.MemberRepository;
-import hello.scheduledevelop.schedule.dto.SearchScheduleResponse;
-import hello.scheduledevelop.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,12 +34,12 @@ public class MemberService {
 
         // 이미 가입된 이메일이 있을 시 예외 발생
         if (memberRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalStateException("이미 가입된 이메일입니다.");
+            throw new UnauthorizedException(ErrorCode.DUPLICATE_EMAIL);
         }
 
         // 이미 가입된 이름이 있을 시 예외 발생
         if (memberRepository.existsByName(request.getName())) {
-            throw new IllegalStateException("이미 가입된 이름입니다");
+            throw new UnauthorizedException(ErrorCode.DUPLICATE_NAME);
         }
 
         Member member = new Member(
@@ -67,7 +68,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public SearchMemberResponse findMemberById(Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new IllegalStateException("존재하지 않는 유저입니다.")
+                () -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER)
         );
 
         return new SearchMemberResponse(
@@ -88,7 +89,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public SearchMemberResponse findMemberByName(SearchMemberRequest request) {
         Member member = memberRepository.findByName(request.getName()).orElseThrow(
-                () -> new IllegalStateException("존재하지 않는 유저입니다.")
+                () -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER)
         );
 
         return new SearchMemberResponse(
@@ -132,12 +133,12 @@ public class MemberService {
     @Transactional
     public UpdateMemberResponse updateMember(Long memberId, UpdateMemberRequest request) {
         Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new IllegalStateException("존재하지 않는 유저입니다.")
+                () -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER)
         );
 
         // 현재 요청 중인 세션 id와 수정을 요청하는 유저의 id가 다르면 예외 발생
         if (!memberId.equals(member.getId())) {
-            throw new IllegalStateException("접근할 수 없습니다.");
+            throw new UnauthorizedException(ErrorCode.ACCESS_DENIED);
         }
 
         member.updateName(request.getName());
@@ -159,12 +160,12 @@ public class MemberService {
     @Transactional
     public void deleteMember(Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new IllegalStateException("존재하지 않는 유저입니다.")
+                () -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER)
         );
 
         // 현재 요청 중인 세션 id와 수정을 요청하는 유저의 id가 다르면 예외 발생
         if (!memberId.equals(member.getId())) {
-            throw new IllegalStateException("접근할 수 없습니다.");
+            throw new UnauthorizedException(ErrorCode.ACCESS_DENIED);
         }
 
         memberRepository.delete(member);
@@ -179,7 +180,7 @@ public class MemberService {
     @Transactional
     public Member getMember(Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new IllegalStateException("존재하지 않는 유저입니다.")
+                () -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER)
         );
 
         return member;

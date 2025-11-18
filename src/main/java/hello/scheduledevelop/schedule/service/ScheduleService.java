@@ -1,5 +1,8 @@
 package hello.scheduledevelop.schedule.service;
 
+import hello.scheduledevelop.common.exception.DataNotFoundException;
+import hello.scheduledevelop.common.exception.ErrorCode;
+import hello.scheduledevelop.common.exception.UnauthorizedException;
 import hello.scheduledevelop.member.entity.Member;
 import hello.scheduledevelop.member.service.MemberService;
 import hello.scheduledevelop.schedule.dto.*;
@@ -63,12 +66,12 @@ public class ScheduleService {
     @Transactional(readOnly = true)
     public SearchScheduleResponse findScheduleById(Long scheduleId, Long memberId) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> new IllegalStateException("존재하지 않는 일정입니다.")
+                () -> new DataNotFoundException(ErrorCode.NOT_FOUND_SCHEDULE)
         );
 
         // 현재 요청 중인 세션 id와 수정을 요청하는 유저의 id가 다르면 예외 발생
         if (!memberId.equals(schedule.getMember().getId())) {
-            throw new IllegalStateException("접근할 수 없습니다.");
+            throw new UnauthorizedException(ErrorCode.ACCESS_DENIED);
         }
 
         return new SearchScheduleResponse(
@@ -94,12 +97,12 @@ public class ScheduleService {
         List<Schedule> schedules = scheduleRepository.findByMemberId(memberId);
 
         if (schedules.isEmpty()) {
-            throw new IllegalStateException("일정이 존재하지 않습니다.");
+            throw new DataNotFoundException(ErrorCode.NOT_FOUND_SCHEDULE);
         }
 
         // 현재 요청 중인 세션 id와 수정을 요청하는 유저의 id가 다르면 예외 발생
         if (!memberId.equals(schedules.get(0).getMember().getId())) {
-            throw new IllegalStateException("접근할 수 없습니다.");
+            throw new UnauthorizedException(ErrorCode.ACCESS_DENIED);
         }
 
         List<SearchScheduleResponse> dtos = schedules.stream()
@@ -126,12 +129,12 @@ public class ScheduleService {
     @Transactional
     public UpdateScheduleResponse updateSchedule(Long scheduleId, Long memberId, UpdateScheduleRequest request) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> new IllegalStateException("존재하지 않는 일정입니다.")
+                () -> new DataNotFoundException(ErrorCode.NOT_FOUND_SCHEDULE)
         );
 
         // 현재 요청 중인 세션 id와 수정을 요청하는 유저의 id가 다르면 예외 발생
         if (!memberId.equals(schedule.getMember().getId())) {
-            throw new IllegalStateException("접근할 수 없습니다.");
+            throw new UnauthorizedException(ErrorCode.ACCESS_DENIED);
         }
 
         schedule.updateSchedule(
@@ -161,12 +164,12 @@ public class ScheduleService {
     @Transactional
     public void deleteSchedule(Long scheduleId, Long memberId) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> new IllegalStateException("존재하지 않는 일정입니다.")
+                () -> new DataNotFoundException(ErrorCode.NOT_FOUND_SCHEDULE)
         );
 
         // 현재 요청 중인 세션 id와 수정을 요청하는 유저의 id가 다르면 예외 발생
         if (!memberId.equals(schedule.getMember().getId())) {
-            throw new IllegalStateException("접근할 수 없습니다.");
+            throw new UnauthorizedException(ErrorCode.ACCESS_DENIED);
         }
 
         scheduleRepository.deleteById(scheduleId);

@@ -1,5 +1,7 @@
 package hello.scheduledevelop.member.controller;
 
+import hello.scheduledevelop.common.exception.ErrorCode;
+import hello.scheduledevelop.common.exception.UnauthorizedException;
 import hello.scheduledevelop.member.dto.LoginRequest;
 import hello.scheduledevelop.member.dto.SessionMember;
 import hello.scheduledevelop.member.dto.SignupRequest;
@@ -46,7 +48,7 @@ public class AuthController {
 
         // 세션에 loginMember로 찾은 SessionMember가 없으면 로그인된 사용자 X
         if (sessionMember == null) {
-            return ResponseEntity.badRequest().build();
+            throw new UnauthorizedException(ErrorCode.UNAUTHENTICATE_MEMBER);
         }
 
         // 존재하면 세션을 무력화

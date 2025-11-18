@@ -1,5 +1,7 @@
 package hello.scheduledevelop.member.service;
 
+import hello.scheduledevelop.common.exception.DataNotFoundException;
+import hello.scheduledevelop.common.exception.ErrorCode;
 import hello.scheduledevelop.common.exception.UnauthorizedException;
 import hello.scheduledevelop.member.dto.LoginRequest;
 import hello.scheduledevelop.member.dto.SessionMember;
@@ -29,12 +31,12 @@ public class AuthService {
     public SessionMember login(LoginRequest request) {
         // 가입되지 않은 이메일이면 예외 발생
         Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(
-                () -> new IllegalStateException("존재하지 않는 유저입니다.")
+                () -> new DataNotFoundException(ErrorCode.NOT_FOUND_MEMBER)
         );
 
         // 로그인 시 입력한 비밀번호가 틀릴 시 예외 발생
         if (!request.getPassword().equals(member.getPassword())) {
-            throw new UnauthorizedException("비밀번호가 틀립니다.");
+            throw new UnauthorizedException(ErrorCode.LOGIN_FAIL);
         }
 
         return new SessionMember(

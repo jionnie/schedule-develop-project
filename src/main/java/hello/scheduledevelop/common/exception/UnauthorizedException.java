@@ -1,13 +1,16 @@
 package hello.scheduledevelop.common.exception;
 
+import lombok.Getter;
+
 /**
  * 인증 실패 시 예외
  *
  * @author jiwon jung
  */
-public class UnauthorizedException extends RuntimeException {
+@Getter
+public class UnauthorizedException extends CustomException {
 
-    public UnauthorizedException(String message) {
-        super(message);
+    public UnauthorizedException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }

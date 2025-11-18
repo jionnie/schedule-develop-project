@@ -1,5 +1,7 @@
 package hello.scheduledevelop.schedule.controller;
 
+import hello.scheduledevelop.common.exception.ErrorCode;
+import hello.scheduledevelop.common.exception.UnauthorizedException;
 import hello.scheduledevelop.member.dto.SessionMember;
 import hello.scheduledevelop.schedule.dto.*;
 import hello.scheduledevelop.schedule.service.ScheduleService;
@@ -32,7 +34,7 @@ public class ScheduleController {
 
         // 세션에 loginMember로 찾은 SessionMember가 없으면 로그인된 사용자 X
         if (sessionMember == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UnauthorizedException(ErrorCode.UNAUTHENTICATE_MEMBER);
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(scheduleService.createSchedule(sessionMember.getId(), request));
@@ -46,7 +48,7 @@ public class ScheduleController {
 
         // 세션에 loginMember로 찾은 SessionMember가 없으면 로그인된 사용자 X
         if (sessionMember == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UnauthorizedException(ErrorCode.UNAUTHENTICATE_MEMBER);
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findScheduleById(scheduleId, sessionMember.getId()));
@@ -59,7 +61,7 @@ public class ScheduleController {
 
         // 세션에 loginMember로 찾은 SessionMember가 없으면 로그인된 사용자 X
         if (sessionMember == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UnauthorizedException(ErrorCode.UNAUTHENTICATE_MEMBER);
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(scheduleService.findSchedules(sessionMember.getId()));
@@ -74,7 +76,7 @@ public class ScheduleController {
 
         // 세션에 loginMember로 찾은 SessionMember가 없으면 로그인된 사용자 X
         if (sessionMember == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UnauthorizedException(ErrorCode.UNAUTHENTICATE_MEMBER);
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(scheduleService.updateSchedule(scheduleId, sessionMember.getId(), request));
@@ -88,7 +90,7 @@ public class ScheduleController {
 
         // 세션에 loginMember로 찾은 SessionMember가 없으면 로그인된 사용자 X
         if (sessionMember == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new UnauthorizedException(ErrorCode.UNAUTHENTICATE_MEMBER);
         }
 
         scheduleService.deleteSchedule(scheduleId, sessionMember.getId());
