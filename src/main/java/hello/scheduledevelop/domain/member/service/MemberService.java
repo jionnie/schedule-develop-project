@@ -55,13 +55,7 @@ public class MemberService {
 
         memberRepository.save(member);
 
-        return new SignupResponse(
-                member.getId(),
-                member.getName(),
-                member.getEmail(),
-                member.getCreatedAt(),
-                member.getModifiedAt()
-        );
+        return SignupResponse.from(member);
     }
 
     /**
@@ -76,13 +70,7 @@ public class MemberService {
                 () -> new MemberNotFoundException(ErrorCode.NOT_FOUND_MEMBER)
         );
 
-        return new SearchMemberResponse(
-                member.getId(),
-                member.getName(),
-                member.getEmail(),
-                member.getCreatedAt(),
-                member.getModifiedAt()
-        );
+        return SearchMemberResponse.from(member);
     }
 
     /**
@@ -97,13 +85,7 @@ public class MemberService {
                 () -> new MemberNotFoundException(ErrorCode.NOT_FOUND_MEMBER)
         );
 
-        return new SearchMemberResponse(
-                member.getId(),
-                member.getName(),
-                member.getEmail(),
-                member.getCreatedAt(),
-                member.getModifiedAt()
-        );
+        return SearchMemberResponse.from(member);
     }
 
     /**
@@ -125,15 +107,10 @@ public class MemberService {
         }
 
         member.updateName(request.getName());
-        memberRepository.flush();
 
-        return new UpdateMemberResponse(
-                member.getId(),
-                member.getName(),
-                member.getEmail(),
-                member.getCreatedAt(),
-                member.getModifiedAt()
-        );
+        memberRepository.flush(); // 변경 시간 바로 반영
+
+        return UpdateMemberResponse.from(member);
     }
 
     /**

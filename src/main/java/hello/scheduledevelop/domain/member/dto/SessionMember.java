@@ -1,5 +1,6 @@
 package hello.scheduledevelop.domain.member.dto;
 
+import hello.scheduledevelop.domain.member.entity.Member;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -15,4 +16,12 @@ public class SessionMember {
     private final Long id;
     private final String name;
     private final String email;
+
+    public static SessionMember from(Member member) {
+        return new SessionMember(
+                member.getId(),
+                member.getName(),
+                member.getEmail()
+        );
+    }
 }

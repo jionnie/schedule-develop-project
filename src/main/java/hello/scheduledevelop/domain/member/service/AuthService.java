@@ -43,9 +43,6 @@ public class AuthService {
             throw new InvalidPasswordException(ErrorCode.LOGIN_FAIL);
         }
 
-        return new SessionMember(
-                member.getId(),
-                member.getName(),
-                member.getEmail());
+        return SessionMember.from(member);
     }
 }

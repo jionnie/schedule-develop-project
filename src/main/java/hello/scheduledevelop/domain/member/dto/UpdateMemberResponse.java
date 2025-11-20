@@ -1,5 +1,6 @@
 package hello.scheduledevelop.domain.member.dto;
 
+import hello.scheduledevelop.domain.member.entity.Member;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -19,4 +20,14 @@ public class UpdateMemberResponse {
     private final String email;
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
+
+    public static UpdateMemberResponse from(Member member) {
+        return new UpdateMemberResponse(
+                member.getId(),
+                member.getName(),
+                member.getEmail(),
+                member.getCreatedAt(),
+                member.getModifiedAt()
+        );
+    }
 }

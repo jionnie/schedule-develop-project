@@ -1,6 +1,8 @@
 package hello.scheduledevelop.domain.schedule.dto;
 
+import hello.scheduledevelop.domain.schedule.entity.Schedule;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,25 +13,28 @@ import java.time.LocalDateTime;
  * @author jiwon jung
  */
 @Getter
+@RequiredArgsConstructor
 public class SearchScheduleResponse {
 
-    private Long id;
-    private Long memberId;
-    private String title;
-    private String content;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
+    private final Long id;
+    private final Long memberId;
+    private final String title;
+    private final String content;
+    private final LocalDate startDate;
+    private final LocalDate endDate;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime modifiedAt;
 
-    public SearchScheduleResponse(Long id, Long memberId, String title, String content, LocalDate startDate, LocalDate endDate, LocalDateTime createdAt, LocalDateTime modifiedAt) {
-        this.id = id;
-        this.memberId = memberId;
-        this.title = title;
-        this.content = content;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
+    public static SearchScheduleResponse from(Schedule schedule) {
+        return new SearchScheduleResponse(
+                schedule.getId(),
+                schedule.getMember().getId(),
+                schedule.getTitle(),
+                schedule.getContent(),
+                schedule.getStartDate(),
+                schedule.getEndDate(),
+                schedule.getCreatedAt(),
+                schedule.getModifiedAt()
+        );
     }
 }

@@ -45,16 +45,7 @@ public class ScheduleService {
                 member
         ));
 
-        return new CreateScheduleResponse(
-                schedule.getId(),
-                schedule.getMember().getId(),
-                schedule.getTitle(),
-                schedule.getContent(),
-                schedule.getStartDate(),
-                schedule.getEndDate(),
-                schedule.getCreatedAt(),
-                schedule.getModifiedAt()
-        );
+        return CreateScheduleResponse.from(schedule);
     }
 
     /**
@@ -74,16 +65,7 @@ public class ScheduleService {
             throw new UnauthorizedAccessException(ErrorCode.ACCESS_DENIED);
         }
 
-        return new SearchScheduleResponse(
-                schedule.getId(),
-                schedule.getMember().getId(),
-                schedule.getTitle(),
-                schedule.getContent(),
-                schedule.getStartDate(),
-                schedule.getEndDate(),
-                schedule.getCreatedAt(),
-                schedule.getModifiedAt()
-        );
+        return SearchScheduleResponse.from(schedule);
     }
 
     /**
@@ -106,15 +88,7 @@ public class ScheduleService {
         }
 
         List<SearchScheduleResponse> dtos = schedules.stream()
-                .map(schedule -> new SearchScheduleResponse(
-                        schedule.getId(),
-                        schedule.getMember().getId(),
-                        schedule.getTitle(),
-                        schedule.getContent(),
-                        schedule.getStartDate(),
-                        schedule.getEndDate(),
-                        schedule.getCreatedAt(),
-                        schedule.getModifiedAt()))
+                .map(SearchScheduleResponse::from)
                 .toList();
 
         return dtos;
@@ -144,16 +118,9 @@ public class ScheduleService {
                 request.getEndDate()
         );
 
-        return new UpdateScheduleResponse(
-                schedule.getId(),
-                schedule.getMember().getId(),
-                schedule.getTitle(),
-                schedule.getContent(),
-                schedule.getStartDate(),
-                schedule.getEndDate(),
-                schedule.getCreatedAt(),
-                schedule.getModifiedAt()
-        );
+        scheduleRepository.flush(); // 변경 시간 바로 반영
+
+        return UpdateScheduleResponse.from(schedule);
     }
 
     /**

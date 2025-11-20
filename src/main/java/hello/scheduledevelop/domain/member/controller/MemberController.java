@@ -2,9 +2,7 @@ package hello.scheduledevelop.domain.member.controller;
 
 import hello.scheduledevelop.domain.member.dto.*;
 import hello.scheduledevelop.global.common.dto.ApiResponse;
-import hello.scheduledevelop.global.common.exception.ErrorCode;
 import hello.scheduledevelop.domain.member.service.MemberService;
-import hello.scheduledevelop.global.common.exception.UnauthenticatedMemberException;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
