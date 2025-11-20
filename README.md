@@ -61,7 +61,7 @@ spring.jpa.properties.hibernate.format_sql=true
 ## ✅ 프로젝트 구조
 
 ```
-com.example.schedule
+com.example.scheduledevelop
              ├── domain
                     ├── member
                            ├── controller
