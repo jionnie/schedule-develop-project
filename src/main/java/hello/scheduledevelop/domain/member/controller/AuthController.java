@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -61,11 +60,6 @@ public class AuthController {
     public ResponseEntity<ApiResponse<Void>> logout(
             HttpSession session,
             @SessionAttribute(name = "loginMember", required = false) SessionMember sessionMember) {
-
-        // 세션에 loginMember로 찾은 SessionMember가 없으면 로그인된 사용자 X
-        if (sessionMember == null) {
-            throw new UnauthenticatedMemberException(ErrorCode.UNAUTHENTICATE_MEMBER);
-        }
 
         // 로그아웃 시 세션 무력화
         session.invalidate();

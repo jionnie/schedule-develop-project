@@ -2,10 +2,8 @@ package hello.scheduledevelop.domain.schedule.controller;
 
 import hello.scheduledevelop.domain.schedule.dto.*;
 import hello.scheduledevelop.global.common.dto.ApiResponse;
-import hello.scheduledevelop.global.common.exception.ErrorCode;
 import hello.scheduledevelop.domain.member.dto.SessionMember;
 import hello.scheduledevelop.domain.schedule.service.ScheduleService;
-import hello.scheduledevelop.global.common.exception.UnauthenticatedMemberException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,11 +29,6 @@ public class ScheduleController {
             @SessionAttribute(name = "loginMember", required = false) SessionMember sessionMember,
             @Valid @RequestBody CreateScheduleRequest request) {
 
-        // 세션에 loginMember로 찾은 SessionMember가 없으면 로그인된 사용자 X
-        if (sessionMember == null) {
-            throw new UnauthenticatedMemberException(ErrorCode.UNAUTHENTICATE_MEMBER);
-        }
-
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ApiResponse.success(scheduleService.createSchedule(sessionMember.getId(), request)));
@@ -46,11 +39,6 @@ public class ScheduleController {
             @SessionAttribute(name = "loginMember", required = false) SessionMember sessionMember,
             @PathVariable Long scheduleId) {
 
-        // 세션에 loginMember로 찾은 SessionMember가 없으면 로그인된 사용자 X
-        if (sessionMember == null) {
-            throw new UnauthenticatedMemberException(ErrorCode.UNAUTHENTICATE_MEMBER);
-        }
-
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResponse.success(scheduleService.findScheduleById(scheduleId, sessionMember.getId())));
@@ -59,11 +47,6 @@ public class ScheduleController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<SearchScheduleResponse>>> getSchedules(
             @SessionAttribute(name = "loginMember", required = false) SessionMember sessionMember) {
-
-        // 세션에 loginMember로 찾은 SessionMember가 없으면 로그인된 사용자 X
-        if (sessionMember == null) {
-            throw new UnauthenticatedMemberException(ErrorCode.UNAUTHENTICATE_MEMBER);
-        }
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -76,11 +59,6 @@ public class ScheduleController {
             @PathVariable Long scheduleId,
             @Valid @RequestBody UpdateScheduleRequest request) {
 
-        // 세션에 loginMember로 찾은 SessionMember가 없으면 로그인된 사용자 X
-        if (sessionMember == null) {
-            throw new UnauthenticatedMemberException(ErrorCode.UNAUTHENTICATE_MEMBER);
-        }
-
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResponse.success(scheduleService.updateSchedule(scheduleId, sessionMember.getId(), request)));
@@ -90,11 +68,6 @@ public class ScheduleController {
     public ResponseEntity<Void> deleteSchedule(
             @SessionAttribute(name = "loginMember", required = false) SessionMember sessionMember,
             @PathVariable Long scheduleId) {
-
-        // 세션에 loginMember로 찾은 SessionMember가 없으면 로그인된 사용자 X
-        if (sessionMember == null) {
-            throw new UnauthenticatedMemberException(ErrorCode.UNAUTHENTICATE_MEMBER);
-        }
 
         scheduleService.deleteSchedule(scheduleId, sessionMember.getId());
 

@@ -125,6 +125,7 @@ public class MemberService {
         }
 
         member.updateName(request.getName());
+        memberRepository.flush();
 
         return new UpdateMemberResponse(
                 member.getId(),

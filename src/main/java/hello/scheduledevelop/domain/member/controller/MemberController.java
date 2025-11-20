@@ -34,6 +34,7 @@ public class MemberController {
      */
     @GetMapping("/{memberId}")
     public ResponseEntity<ApiResponse<SearchMemberResponse>> getMemberById(@PathVariable Long memberId) {
+
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResponse.success(memberService.findMemberById(memberId)));
@@ -65,11 +66,6 @@ public class MemberController {
             @SessionAttribute(name = "loginMember", required = false) SessionMember sessionMember,
             @Valid @RequestBody UpdateMemberRequest request) {
 
-        // 세션에 loginMember로 찾은 SessionMember가 없으면 로그인된 사용자 X
-        if (sessionMember == null) {
-            throw new UnauthenticatedMemberException(ErrorCode.UNAUTHENTICATE_MEMBER);
-        }
-
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(ApiResponse.success(memberService.updateMember(sessionMember.getId(), request)));
@@ -85,11 +81,6 @@ public class MemberController {
     public ResponseEntity<Void> deleteMember(
             HttpSession session,
             @SessionAttribute(name = "loginMember", required = false) SessionMember sessionMember) {
-
-        // 세션에 loginMember로 찾은 SessionMember가 없으면 로그인된 사용자 X
-        if (sessionMember == null) {
-            throw new UnauthenticatedMemberException(ErrorCode.UNAUTHENTICATE_MEMBER);
-        }
 
         memberService.deleteMember(sessionMember.getId());
 
