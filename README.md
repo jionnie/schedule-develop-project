@@ -88,7 +88,7 @@ com.example.scheduledevelop
 
 ## ✅ API 명세서
 
-
+https://documenter.getpostman.com/view/48484019/2sB3WyJwX6
 
 ## ✅ ERD 다이어그램
 
