@@ -30,7 +30,7 @@
   - ```java -jar build/libs/scheduleDevelop-0.0.1-SNAPSHOT.jar```
 
 - 방법 2
-  - 인텔리제이에서 ```ScheduleApplication``` 실행
+  - 인텔리제이에서 ```ScheduleDevelopApplication``` 실행
  
 - ⚠️ application.properties에서 데이터베이스 연결 정보 확인
   
@@ -62,33 +62,25 @@ spring.jpa.properties.hibernate.format_sql=true
 
 ```
 com.example.schedule
-             ├── controller
-                    ├── CommentController
-                    └── ScheduleController
-             ├── dto
-                    ├── CreateCommentRequest
-                    ├── CreateCommentResponse
-                    ├── CreateScheduleRequest
-                    ├── CreateScheduleResponse
-                    ├── DeleteScheduleRequest
-                    ├── GetCommentResponse
-                    ├── GetScheduleResponse
-                    ├── UpdateScheduleRequest
-                    └── UpdateScheduleResponse
-             ├── entity
-                    ├── BaseEntity
-                    ├── Comment
-                    └── Schedule
-             ├── exception
-                    ├── CommentLimitExceededException
-                    ├── GlobalExceptionHandler
-                    └── InvalidPasswordException
-             ├── repository
-                    ├── CommentRepository
-                    └── ScheduleRepository
-             ├── service
-                    ├── CommentService
-                    └── ScheduleService
+             ├── domain
+                    ├── member
+                           ├── controller
+                           ├── dto
+                           ├── entity
+                           ├── repository
+                           └── service
+                    └── schedule
+                           ├── controller
+                           ├── dto
+                           ├── entity
+                           ├── repository
+                           └── service
+             ├── global
+                    ├── common
+                           ├── dto
+                           ├── entity
+                           └── exception
+                    └── config
              └── ScheduleApplication
 ```
 
@@ -97,5 +89,7 @@ com.example.schedule
 
 
 ## ✅ ERD 다이어그램
+
+<img width="1026" height="336" alt="image" src="https://github.com/user-attachments/assets/6e75eeae-e658-4185-b90b-7e4aa5d4eaa7" />
 
 
