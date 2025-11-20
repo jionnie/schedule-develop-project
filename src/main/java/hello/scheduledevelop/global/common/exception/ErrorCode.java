@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum ErrorCode {
 
-    LOGIN_FAIL(HttpStatus.UNAUTHORIZED, "이메일 또는 비밀번호가 틀립니다."),
+    LOGIN_FAIL(HttpStatus.UNAUTHORIZED, "비밀번호가 틀립니다."),
     UNAUTHENTICATE_MEMBER(HttpStatus.UNAUTHORIZED, "로그인 되지 않은 사용자입니다."),
 
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),

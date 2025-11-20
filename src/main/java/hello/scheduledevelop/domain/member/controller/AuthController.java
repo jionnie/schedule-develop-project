@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -27,17 +26,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<SignupResponse>> signup(
-            @Valid @RequestBody SignupRequest request,
-            BindingResult bindingResult) {
-
-//        if (bindingResult.hasErrors()) {
-//            StringBuilder sb = new StringBuilder();
-//
-//            bindingResult.getAllErrors().forEach(objectError -> {
-//                FieldError field = (FieldError) objectError;
-//                String message = objectError.getDefaultMessage();
-//            });
-//        }
+            @Valid @RequestBody SignupRequest request) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -56,8 +45,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<Void>> logout(
-            HttpSession session,
-            @SessionAttribute(name = "loginMember", required = false) SessionMember sessionMember) {
+            HttpSession session) {
 
         // 로그아웃 시 세션 무력화
         session.invalidate();
